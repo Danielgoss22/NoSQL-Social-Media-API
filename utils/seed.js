@@ -17,7 +17,7 @@ connection.once("open", async () => {
     await connection.dropCollection("thought");
   }
 
-  await User.insertMany(users);
+  await User.insertMany(user);
 
   console.table(user);
   console.info("Seeding Done!");

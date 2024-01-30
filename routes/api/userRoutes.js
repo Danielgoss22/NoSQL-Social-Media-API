@@ -1,9 +1,14 @@
 const router = require("express").Router();
 const {
   getUsers,
-  getSingleStudent,
-  createStudent,
-  deleteStudent,
-  addAssignment,
-  removeAssignment,
+  getOneUser,
+  createUser,
+  updateUser,
+  deleteUser,
 } = require("../../controllers/users");
+
+router.route("/").get(getUsers).post(createUser);
+
+router.route("/:userId").get(getOneUser).put(updateUser).delete(deleteUser);
+
+module.exports = router;
