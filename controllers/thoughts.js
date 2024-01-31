@@ -1,42 +1,42 @@
-const { User, Thought } = require("../models");
+const { Thought, User } = require("../models");
 
 module.exports = {
-  async getUsers(req, res) {
+  async getThoughts(req, res) {
     try {
-      const users = await User.find().populate("thoughts");
-      res.status(200).json(users);
+      const thoughts = await Thought.find();
+      res.status(200).json(thoughts);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
     }
   },
-  async getOneUser(req, res) {
+  async getOneThought(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId }).populate(
-        "thoughts"
-      );
-      if (!user) {
-        return res.status(404).json({ message: "No user Found." });
+      const thought = await Thought.findOne({
+        _id: req.params.thoughtId,
+      }).populate("user");
+      if (!thought) {
+        return res.status(404).json({ message: "No thoughts with that ID." });
       }
-      res.status(200).json(user);
+      res.status(200).json(thought);
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
   },
-  async createUser(req, res) {
+  async createThought(req, res) {
     try {
-      const newUser = await User.create(req.body);
-      res.status(200).json(newUser);
+      const newThought = await Thought.create(req.body);
+      res.status(200).json(newThought);
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
   },
-  async updateUser(req, res) {
+  async updateThought(req, res) {
     try {
-      const update = await User.findOneAndUpdate(
-        { _id: req.params.userId },
+      const update = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
         { $set: req.body },
         { new: true }
       );
@@ -46,13 +46,13 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  async deleteUser(req, res) {
+  async deleteThought(req, res) {
     try {
-      const deleteOneUser = await User.findOneAndDelete({
+      const deleteOneThought = await Thought.findOneAndDelete({
         _id: req.params.userId,
       });
-      if (!deleteOneUser) {
-        return res.status(404).json({ message: "No user is found." });
+      if (!deleteOneThought) {
+        return res.status(404).json({ message: "No thought is found." });
       }
 
       const thought = await Thought.findOneAndUpdate(
@@ -63,7 +63,7 @@ module.exports = {
 
       if (!thought) {
         return res.status(404).json({
-          message: "User deleted, but no thoughts found",
+          message: "Unable to delete.",
         });
       }
       res.status(200).json(deleteOneUser);
